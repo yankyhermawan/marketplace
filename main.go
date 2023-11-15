@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/yankyhermawan/marketplace/database"
 	"github.com/yankyhermawan/marketplace/interfaces"
-	"github.com/yankyhermawan/marketplace/registerService"
+	"github.com/yankyhermawan/marketplace/user"
 )
 
 func main() {
@@ -19,6 +21,12 @@ func main() {
 		})
 	})
 
+	router.GET("/users", func(c *gin.Context) {
+		response := user.GetAllUsers()
+		fmt.Println(response)
+		c.JSON(response.Code, response.Response)
+	})
+
 	router.POST("/register", func(c *gin.Context) {
 		var requestBody interfaces.RequestBody
 
@@ -26,7 +34,7 @@ func main() {
 			c.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
-		response := registerService.RegisterUser(&requestBody)
+		response := user.RegisterUser(&requestBody)
 		c.JSON(response.Code, gin.H{"message": response.Response})
 
 	})
